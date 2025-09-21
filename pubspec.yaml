@@ -27,7 +27,17 @@ flutter:
 
   assets:
     - assets/images/
+    - assets/images/new_flight/
     - assets/icons/
+
+  fonts:
+    - family: Montserrat
+      fonts:
+        - asset: fonts/Montserrat.ttf
+
+    - family: Montserrat-ExtraBold
+      fonts:
+        - asset: fonts/Montserrat-ExtraBold.ttf
 
   # Para agregar assets a tu aplicación, descomenta y edita lo siguiente:
   # assets:
