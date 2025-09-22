@@ -13,7 +13,7 @@ class HomeScreen extends StatelessWidget {
       children: [
         CupertinoTabScaffold(
           tabBar: CupertinoTabBar(
-            backgroundColor: CupertinoColors.black.withOpacity(0.025),
+            backgroundColor: CupertinoColors.white.withOpacity(0.7),
             items: const <BottomNavigationBarItem>[
               BottomNavigationBarItem(
                 icon: Icon(CupertinoIcons.airplane),

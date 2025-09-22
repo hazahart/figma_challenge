@@ -1,8 +1,13 @@
 import 'package:figma_challenge/screens/home.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:figma_challenge/screens/new_flight.dart';
+import 'package:intl/date_symbol_data_local.dart';
 
-void main() => runApp(const PlaneApp());
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await initializeDateFormatting('es_MX');
+  runApp(const PlaneApp());
+}
 
 class PlaneApp extends StatelessWidget {
   const PlaneApp({super.key});
