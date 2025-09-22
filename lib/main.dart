@@ -1,3 +1,4 @@
+import 'package:figma_challenge/screens/home.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:figma_challenge/screens/new_flight.dart';
 
@@ -13,7 +14,7 @@ class PlaneApp extends StatelessWidget {
       theme: CupertinoThemeData(brightness: Brightness.light),
       initialRoute: '/onboarding0',
       routes: {
-        '/': (context) => const Placeholder(),
+        '/': (context) => const HomeScreen(),
         '/onboarding0': (context) => const NewFlight(),
       },
     );

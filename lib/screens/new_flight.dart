@@ -11,7 +11,7 @@ class NewFlight extends StatelessWidget {
         leading: CupertinoButton(
           padding: EdgeInsets.zero,
           onPressed: () {
-            exit(0);
+            Navigator.of(context).pop();
           },
           child: const Text('Close'),
         ),
