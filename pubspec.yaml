@@ -1,7 +1,7 @@
 name: figma_challenge
 description: "Aplicación basada en diseño de Figma"
 publish_to: 'none'
-version: 0.0.2+2
+version: 0.2.1+3
 
 environment:
   sdk: ^3.9.2
@@ -12,6 +12,7 @@ dependencies:
   cupertino_icons: ^1.0.8
   flutter_launcher_icons: ^0.14.4
   intl: ^0.20.2
+  flutter_svg: ^2.2.1
 
 dev_dependencies:
   flutter_test:
@@ -31,6 +32,7 @@ flutter:
     - assets/images/new_flight/
     - assets/images/airlines/
     - assets/icons/
+    - assets/icons/tabbar/
 
   fonts:
     - family: Montserrat

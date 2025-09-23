@@ -23,6 +23,7 @@ class FlightsContent extends StatelessWidget {
         ),
       ),
       child: ListView.separated(
+        padding: EdgeInsets.only(bottom: 120, top: 80),
         itemCount: 16,
         separatorBuilder: (context, index) {
           return const Divider(height: 1, indent: 16, endIndent: 16);
