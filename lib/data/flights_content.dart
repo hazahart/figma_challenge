@@ -1,118 +1,84 @@
+import 'package:figma_challenge/models/flights.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:intl/intl.dart';
+import 'flights_list.dart';
 
 class FlightsContent extends StatelessWidget {
   const FlightsContent({super.key});
 
   @override
   Widget build(BuildContext context) {
-    final DateTime now = DateTime.now();
+    final vuelos = FlightsList.getFlights();
 
-    final DateFormat fechaFormateada = DateFormat("E d MMM, y", "es_MX");
-
-    final String today = fechaFormateada.format(now);
+    Widget buildFlightTile(Flight vuelo, int index) {
+      return ListTile(
+        leading: CircleAvatar(
+          backgroundColor: CupertinoColors.white,
+          radius: 28,
+          backgroundImage: AssetImage("assets/images/airlines/${vuelo.aerolinea}.png"),
+        ),
+        title: Text(
+          vuelo.aeropuerto,
+          style: const TextStyle(fontFamily: "Montserrat-ExtraBold"),
+        ),
+        subtitle: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Row(
+              children: [
+                Text(vuelo.origen, style: TextStyle(fontFamily: "Montserrat", fontWeight: FontWeight.bold)),
+                const SizedBox(width: 5),
+                const Icon(CupertinoIcons.airplane, size: 16),
+                const SizedBox(width: 5),
+                Text(vuelo.destino, style: TextStyle(fontFamily: "Montserrat", fontWeight: FontWeight.bold)),
+              ],
+            ),
+            Text(
+              vuelo.fecha,
+              style: const TextStyle(color: CupertinoColors.secondaryLabel),
+            ),
+          ],
+        ),
+        trailing: const Icon(CupertinoIcons.right_chevron,
+            color: CupertinoColors.tertiaryLabel),
+        onTap: () {
+          showCupertinoDialog(
+            context: context,
+            builder: (_) => CupertinoAlertDialog(
+              title: Text("Vuelo #${index + 1}"),
+              content: Text("Has seleccionado ${vuelo.aerolinea}."),
+              actions: [
+                CupertinoDialogAction(
+                  child: const Text("OK"),
+                  onPressed: () => Navigator.pop(context),
+                ),
+                CupertinoDialogAction(
+                  isDestructiveAction: true,
+                  child: const Text("Cancelar"),
+                  onPressed: () => Navigator.pop(context),
+                ),
+              ],
+            ),
+          );
+        },
+      );
+    }
 
     return CupertinoPageScaffold(
       navigationBar: CupertinoNavigationBar(
         middle: const Text("My Flights"),
         trailing: CupertinoButton(
-          onPressed: () {},
           padding: EdgeInsets.zero,
+          onPressed: () {},
           child: const Text("Edit"),
         ),
       ),
       child: ListView.separated(
-        padding: EdgeInsets.only(bottom: 120, top: 80),
-        itemCount: 16,
-        separatorBuilder: (context, index) {
-          return const Divider(height: 1, indent: 16, endIndent: 16);
-        },
-        itemBuilder: (context, index) {
-          return GestureDetector(
-            onTap: (){
-              showCupertinoDialog(
-                context: context,
-                builder: (BuildContext context) {
-                  return CupertinoAlertDialog(
-                    title: Text("Vuelo #${index + 1}"),
-                    content: const Text("Has seleccionado este vuelo. ¿Qué te gustaría hacer?"),
-                    actions: <Widget>[
-                      CupertinoDialogAction(
-                        isDefaultAction: true,
-                        child: const Text("OK"),
-                        onPressed: () {
-                          Navigator.of(context).pop();
-                        },
-                      ),
-                      CupertinoDialogAction(
-                        isDestructiveAction: true,
-                        child: const Text("Cancelar"),
-                        onPressed: () {
-                          Navigator.of(context).pop();
-                        },
-                      )
-                    ],
-                  );
-                },
-              );
-            },
-            child: SafeArea(
-              top: false,
-              bottom: false,
-              child: Padding(
-                padding: const EdgeInsets.all(16),
-                child: Row(
-                  children: [
-                    CircleAvatar(
-                      radius: 30,
-                      child: ClipRRect(
-                        borderRadius: BorderRadius.circular(30),
-                        child: Image.asset(
-                          "assets/images/airlines/aeromexico.png",
-                          fit: BoxFit.cover,
-                        ),
-                      ),
-                    ),
-                    const SizedBox(width: 16),
-                    Expanded(
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(
-                            "Aeropuerto Internacional de la Ciudad de México",
-                            style: TextStyle(fontFamily: "Montserrat-ExtraBold"),
-                          ),
-                          SizedBox(height: 4),
-                          Row(
-                            children: [
-                              Text("CDMX"),
-                              SizedBox(width: 5),
-                              Icon(CupertinoIcons.airplane),
-                              SizedBox(width: 5),
-                              Text("BCN (Barcelona)"),
-                            ],
-                          ),
-                          SizedBox(height: 4),
-                          Text(
-                            today,
-                            style: TextStyle(
-                              color: CupertinoColors.secondaryLabel,
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                    const Icon(
-                      CupertinoIcons.right_chevron,
-                      color: CupertinoColors.tertiaryLabel,
-                    ),
-                  ],
-                ),
-              ),
-            ),
-          );
-        },
+        padding: const EdgeInsets.only(bottom: 120, top: 80),
+        itemCount: vuelos.length,
+        separatorBuilder: (_, __) =>
+        const Divider(height: 1, indent: 16, endIndent: 16),
+        itemBuilder: (_, index) => buildFlightTile(vuelos[index], index),
       ),
     );
   }
