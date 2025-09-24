@@ -1,4 +1,5 @@
 import 'package:figma_challenge/models/flights.dart';
+import 'package:figma_challenge/screens/flight_details.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'flights_list.dart';
@@ -41,26 +42,14 @@ class FlightsContent extends StatelessWidget {
         ),
         trailing: const Icon(CupertinoIcons.right_chevron,
             color: CupertinoColors.tertiaryLabel),
-        onTap: () {
-          showCupertinoDialog(
-            context: context,
-            builder: (_) => CupertinoAlertDialog(
-              title: Text("Vuelo #${index + 1}"),
-              content: Text("Has seleccionado ${vuelo.aerolinea}."),
-              actions: [
-                CupertinoDialogAction(
-                  child: const Text("OK"),
-                  onPressed: () => Navigator.pop(context),
-                ),
-                CupertinoDialogAction(
-                  isDestructiveAction: true,
-                  child: const Text("Cancelar"),
-                  onPressed: () => Navigator.pop(context),
-                ),
-              ],
-            ),
-          );
-        },
+          onTap: () {
+            Navigator.push(
+              context,
+              CupertinoPageRoute(
+                builder: (_) => FlightDetails(vuelo: vuelo),
+              ),
+            );
+          },
       );
     }
 
