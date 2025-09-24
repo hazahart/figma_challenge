@@ -13,7 +13,6 @@ class Flight {
     required this.fecha,
   });
 
-  // Para facilitar creación desde Map
   factory Flight.fromMap(Map<String, String> map) {
     return Flight(
       aerolinea: map["aerolinea"] ?? "",
@@ -24,7 +23,6 @@ class Flight {
     );
   }
 
-  // Para convertir a Map si necesitas
   Map<String, String> toMap() {
     return {
       "aerolinea": aerolinea,
