@@ -1,6 +1,7 @@
 import 'package:figma_challenge/models/flights.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import '../widgets/tabbar.dart';
 
 class FlightDetails extends StatefulWidget {
@@ -18,12 +19,22 @@ class _FlightDetailsState extends State<FlightDetails> {
   @override
   Widget build(BuildContext context) {
     return CupertinoPageScaffold(
-      navigationBar: const CupertinoNavigationBar(
-        // backgroundColor: Color(0x44FFFFFF),
+      navigationBar: CupertinoNavigationBar(
         border: null,
         backgroundColor: CupertinoColors.transparent,
         automaticBackgroundVisibility: false,
         enableBackgroundFilterBlur: false,
+        leading: CupertinoButton(
+          padding: EdgeInsets.zero,
+          minSize: 0,
+          child: Icon(
+            CupertinoIcons.chevron_left,
+            color: CupertinoColors.white,
+            fontWeight: FontWeight.bold,
+            size: 25,
+          ),
+          onPressed: () => Navigator.pop(context),
+        ),
       ),
       child: Stack(
         alignment: Alignment.bottomCenter,
@@ -75,9 +86,9 @@ class _FlightDetailsState extends State<FlightDetails> {
                             Text(
                               widget.vuelo.aerolinea.isNotEmpty
                                   ? widget.vuelo.aerolinea[0].toUpperCase() +
-                                  widget.vuelo.aerolinea
-                                      .substring(1)
-                                      .toLowerCase()
+                                        widget.vuelo.aerolinea
+                                            .substring(1)
+                                            .toLowerCase()
                                   : "",
                               softWrap: true,
                               style: const TextStyle(
@@ -96,17 +107,204 @@ class _FlightDetailsState extends State<FlightDetails> {
               ),
               Container(
                 color: CupertinoColors.white,
-                child: const Padding(
-                  padding: EdgeInsets.all(16.0),
+                child: Padding(
+                  padding: EdgeInsets.only(
+                    left: 24,
+                    right: 24,
+                    top: 42,
+                    bottom: 28,
+                  ),
                   child: Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    spacing: 40,
                     children: [
-                      Column(children: [Text('data')]),
+                      Column(
+                        children: [
+                          Text(
+                            widget.vuelo.origen,
+                            style: TextStyle(
+                              fontFamily: 'Rebelton-Bold',
+                              fontSize: 48,
+                            ),
+                          ),
+                          Text(
+                            "10:55",
+                            style: TextStyle(
+                              fontFamily: 'SF-Pro',
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                          Text(
+                            widget.vuelo.fecha,
+                            style: TextStyle(
+                              fontFamily: 'SF-Pro',
+                              color: Color(0xFF8A8A8E),
+                            ),
+                          ),
+                        ],
+                      ),
+                      Icon(
+                        CupertinoIcons.airplane,
+                        size: 48,
+                        color: Color(0xFF000000),
+                      ),
+                      Column(
+                        children: [
+                          Text(
+                            widget.vuelo.destino.substring(0, 3),
+                            style: TextStyle(
+                              fontFamily: 'Rebelton-Bold',
+                              fontSize: 48,
+                            ),
+                          ),
+                          Text("10:55"),
+                          Text(
+                            widget.vuelo.fecha,
+                            style: TextStyle(
+                              fontFamily: 'SF-Pro',
+                              color: Color(0xFF8A8A8E),
+                            ),
+                          ),
+                        ],
+                      ),
                     ],
                   ),
                 ),
               ),
-              const Card(child: Text('Ci')),
-              const SizedBox(height: 120),
+              Padding(
+                padding: EdgeInsets.all(16.0),
+                child: Card(
+                  elevation: 0,
+                  color: const Color(0xFFF2F2F7),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(12),
+                  ),
+                  child: Padding(
+                    padding: const EdgeInsets.all(16.0),
+                    child: Column(
+                      children: [
+                        _buildInfoRow(
+                          'Flight Number:',
+                          Row(
+                            children: [
+                              Text(
+                                "${widget.vuelo.flightNumber ?? 'NA'} (${widget.vuelo.largeDestiny ?? 'NA'})",
+                                style: TextStyle(
+                                  fontWeight: FontWeight.bold,
+                                  fontSize: 16,
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                        _buildInfoRow(
+                          'Airline:',
+                          Row(
+                            children: [
+                              Image.asset(
+                                "assets/images/airlines/${widget.vuelo.aerolinea}.png",
+                                height: 24,
+                              ),
+                              SizedBox(width: 5),
+                              Text(
+                                widget.vuelo.aerolinea[0].toUpperCase() +
+                                        widget.vuelo.aerolinea.substring(1) ??
+                                    "N/A",
+                                style: TextStyle(
+                                  fontWeight: FontWeight.bold,
+                                  fontSize: 18,
+                                  fontFamily: 'Helvetica-Bold',
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                        SizedBox(height: 16),
+                        Container(
+                          width: double.infinity,
+                          padding: const EdgeInsets.all(16),
+                          decoration: BoxDecoration(
+                            color: CupertinoColors.white,
+                            borderRadius: BorderRadius.circular(12),
+                          ),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              const Text(
+                                'Departure Airport:',
+                                style: TextStyle(
+                                  color: CupertinoColors.secondaryLabel,
+                                  fontSize: 15,
+                                ),
+                              ),
+                              SizedBox(height: 4),
+                              Text(
+                                widget.vuelo.largeAirport ?? "N/A",
+                                style: TextStyle(
+                                  fontWeight: FontWeight.bold,
+                                  fontSize: 18,
+                                  color: CupertinoColors.label,
+                                ),
+                              ),
+                              Text(
+                                widget.vuelo.description ?? "N/A",
+                                style: TextStyle(
+                                  fontWeight: FontWeight.bold,
+                                  fontSize: 18,
+                                  color: CupertinoColors.label,
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                        const SizedBox(height: 16),
+                        Row(
+                          children: [
+                            Expanded(
+                              child: _buildSmallInfoCard(
+                                'Terminal:',
+                                "${widget.vuelo.terminal ?? 'N/A'}",
+                              ),
+                            ),
+                            const SizedBox(width: 16),
+                            Expanded(
+                              child: _buildSmallInfoCard(
+                                'Gate:',
+                                widget.vuelo.gate ?? 'N/A',
+                              ),
+                            ),
+                          ],
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+              ),
+              SizedBox(height: 50),
+              Padding(
+                padding: EdgeInsets.all(16.0),
+                child: Container(
+                  child: Column(
+                    spacing: 10,
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text("Necesitarás los siguientes documentos:"),
+                      Padding(
+                        padding: EdgeInsets.only(left: 16),
+                        child: Column(
+                          children: [
+                            _buildIconText('passport', 'Pasaporte o identificación'),
+                            _buildIconText("qr_code", "Pase de abordar"),
+                            _buildIconText("mask", "Pasaporte COVID-19 o prueba PCR negativa")
+                          ],
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+              SizedBox(height: 120),
             ],
           ),
           TabBarWidget(
@@ -115,11 +313,75 @@ class _FlightDetailsState extends State<FlightDetails> {
               setState(() => currentIndex = index);
             },
             onAddPressed: () {
-              Navigator.of(context, rootNavigator: true).pushNamed('/onboarding0');
+              Navigator.of(
+                context,
+                rootNavigator: true,
+              ).pushNamed('/onboarding0');
             },
           ),
         ],
       ),
+    );
+  }
+
+  Widget _buildInfoRow(String label, Widget valueWidget) {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      crossAxisAlignment: CrossAxisAlignment.center,
+      children: [
+        Text(
+          label,
+          style: const TextStyle(
+            fontSize: 16,
+            color: CupertinoColors.secondaryLabel,
+          ),
+        ),
+        valueWidget,
+      ],
+    );
+  }
+
+  Widget _buildSmallInfoCard(String label, String value) {
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+      decoration: BoxDecoration(
+        color: CupertinoColors.white,
+        borderRadius: BorderRadius.circular(12),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(
+            label,
+            style: const TextStyle(
+              fontSize: 15,
+              color: CupertinoColors.secondaryLabel,
+            ),
+          ),
+          const SizedBox(height: 4),
+          Text(
+            value,
+            style: const TextStyle(
+              fontSize: 48,
+              fontFamily: 'Helvetica',
+              fontWeight: FontWeight.bold,
+              color: CupertinoColors.label,
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  _buildIconText(String asset, String text) {
+    return Row(
+      children: [
+        SvgPicture.asset(
+          'assets/icons/$asset.svg',
+          width: 36,
+        ),
+        Text(text)
+      ],
     );
   }
 }

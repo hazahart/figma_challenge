@@ -48,6 +48,17 @@ flutter:
       fonts:
         - asset: fonts/Helvetica.ttf
 
+    - family: Helvetica-Bold
+      fonts:
+        - asset: fonts/Helvetica-Bold.ttf
+
+    - family: Rebelton-Bold
+      fonts:
+        - asset: fonts/rebelton-bold.ttf
+
+    - family: SF-Pro
+      fonts:
+        - asset: fonts/sf_pro.otf
   # Para agregar assets a tu aplicación, descomenta y edita lo siguiente:
   # assets:
   #   - images/a_dot_burr.jpeg
