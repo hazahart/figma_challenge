@@ -16,7 +16,9 @@ class FlightsContent extends StatelessWidget {
         leading: CircleAvatar(
           backgroundColor: CupertinoColors.white,
           radius: 28,
-          backgroundImage: AssetImage("assets/images/airlines/${vuelo.aerolinea}.png"),
+          backgroundImage: AssetImage(
+            "assets/images/airlines/${vuelo.aerolinea}.png",
+          ),
         ),
         title: Text(
           vuelo.aeropuerto,
@@ -27,11 +29,23 @@ class FlightsContent extends StatelessWidget {
           children: [
             Row(
               children: [
-                Text(vuelo.origen, style: TextStyle(fontFamily: "Montserrat", fontWeight: FontWeight.bold)),
+                Text(
+                  vuelo.origen,
+                  style: TextStyle(
+                    fontFamily: "Montserrat",
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
                 const SizedBox(width: 5),
                 const Icon(CupertinoIcons.airplane, size: 16),
                 const SizedBox(width: 5),
-                Text(vuelo.destino, style: TextStyle(fontFamily: "Montserrat", fontWeight: FontWeight.bold)),
+                Text(
+                  vuelo.destino,
+                  style: TextStyle(
+                    fontFamily: "Montserrat",
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
               ],
             ),
             Text(
@@ -40,34 +54,48 @@ class FlightsContent extends StatelessWidget {
             ),
           ],
         ),
-        trailing: const Icon(CupertinoIcons.right_chevron,
-            color: CupertinoColors.tertiaryLabel),
-          onTap: () {
-            Navigator.push(
-              context,
-              CupertinoPageRoute(
-                builder: (_) => FlightDetails(vuelo: vuelo),
-              ),
-            );
-          },
+        trailing: const Icon(
+          CupertinoIcons.right_chevron,
+          color: CupertinoColors.tertiaryLabel,
+        ),
+        onTap: () {
+          Navigator.push(
+            context,
+            CupertinoPageRoute(builder: (_) => FlightDetails(vuelo: vuelo)),
+          );
+        },
       );
     }
 
     return CupertinoPageScaffold(
       navigationBar: CupertinoNavigationBar(
-        middle: const Text("My Flights"),
+        // middle: const Text("My Flights"),
         trailing: CupertinoButton(
           padding: EdgeInsets.zero,
           onPressed: () {},
           child: const Text("Edit"),
         ),
       ),
-      child: ListView.separated(
-        padding: const EdgeInsets.only(bottom: 120, top: 80),
-        itemCount: vuelos.length,
-        separatorBuilder: (_, __) =>
-        const Divider(height: 1, indent: 16, endIndent: 16),
-        itemBuilder: (_, index) => buildFlightTile(vuelos[index], index),
+      child: SafeArea(
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 16.0),
+              child: Text("My Flights", style: TextStyle(fontSize: 42, fontFamily: 'Gigasans-Bold', fontWeight: FontWeight.bold)),
+            ),
+            Expanded(
+              child: ListView.separated(
+                padding: const EdgeInsets.only(bottom: 120, top: 16),
+                itemCount: vuelos.length,
+                separatorBuilder: (_, __) =>
+                    const Divider(height: 1, indent: 16, endIndent: 16),
+                itemBuilder: (_, index) =>
+                    buildFlightTile(vuelos[index], index),
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }

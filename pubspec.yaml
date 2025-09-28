@@ -52,6 +52,14 @@ flutter:
       fonts:
         - asset: fonts/Helvetica-Bold.ttf
 
+    - family: Gigasans-Bold
+      fonts:
+        - asset: fonts/gigasans-bold.otf
+
+    - family: Gigasans-ExtraBold
+      fonts:
+        - asset: fonts/gigasans_extrabold.otf
+
     - family: Rebelton-Bold
       fonts:
         - asset: fonts/rebelton-bold.ttf
