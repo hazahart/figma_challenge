@@ -117,56 +117,70 @@ class _FlightDetailsState extends State<FlightDetails> {
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     crossAxisAlignment: CrossAxisAlignment.center,
-                    spacing: 40,
                     children: [
-                      Column(
-                        children: [
-                          Text(
-                            widget.vuelo.origen,
-                            style: TextStyle(
-                              fontFamily: 'Rebelton-Bold',
-                              fontSize: 48,
+                      Expanded(
+                        child: Column(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            Text(
+                              widget.vuelo.origen,
+                              style: TextStyle(
+                                fontFamily: 'Rebelton-Bold',
+                                fontSize: 48,
+                              ),
                             ),
-                          ),
-                          Text(
-                            "10:55",
-                            style: TextStyle(
-                              fontFamily: 'SF-Pro',
-                              fontWeight: FontWeight.bold,
+                            Text(
+                              "10:55",
+                              style: TextStyle(
+                                fontFamily: 'SF-Pro',
+                                fontWeight: FontWeight.bold,
+                              ),
                             ),
-                          ),
-                          Text(
-                            widget.vuelo.fecha,
-                            style: TextStyle(
-                              fontFamily: 'SF-Pro',
-                              color: Color(0xFF8A8A8E),
+                            Text(
+                              widget.vuelo.fecha,
+                              style: TextStyle(
+                                fontFamily: 'SF-Pro',
+                                color: Color(0xFF8A8A8E),
+                              ),
                             ),
-                          ),
-                        ],
+                          ],
+                        ),
                       ),
-                      Icon(
-                        CupertinoIcons.airplane,
-                        size: 48,
-                        color: Color(0xFF000000),
+                      Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 16),
+                        child: Icon(
+                          CupertinoIcons.airplane,
+                          size: 48,
+                          color: Color(0xFF000000),
+                        ),
                       ),
-                      Column(
-                        children: [
-                          Text(
-                            widget.vuelo.destino.substring(0, 3),
-                            style: TextStyle(
-                              fontFamily: 'Rebelton-Bold',
-                              fontSize: 48,
+                      Expanded(
+                        child: Column(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            Text(
+                              widget.vuelo.destino.substring(0, 3),
+                              style: TextStyle(
+                                fontFamily: 'Rebelton-Bold',
+                                fontSize: 48,
+                              ),
                             ),
-                          ),
-                          Text("10:55"),
-                          Text(
-                            widget.vuelo.fecha,
-                            style: TextStyle(
-                              fontFamily: 'SF-Pro',
-                              color: Color(0xFF8A8A8E),
+                            Text(
+                              "10:55",
+                              style: TextStyle(
+                                fontFamily: 'SF-Pro',
+                                fontWeight: FontWeight.bold,
+                              ),
                             ),
-                          ),
-                        ],
+                            Text(
+                              widget.vuelo.fecha,
+                              style: TextStyle(
+                                fontFamily: 'SF-Pro',
+                                color: Color(0xFF8A8A8E),
+                              ),
+                            ),
+                          ],
+                        ),
                       ),
                     ],
                   ),
@@ -294,9 +308,15 @@ class _FlightDetailsState extends State<FlightDetails> {
                         padding: EdgeInsets.only(left: 16),
                         child: Column(
                           children: [
-                            _buildIconText('passport', 'Pasaporte o identificación'),
+                            _buildIconText(
+                              'passport',
+                              'Pasaporte o identificación',
+                            ),
                             _buildIconText("qr_code", "Pase de abordar"),
-                            _buildIconText("mask", "Pasaporte COVID-19 o prueba PCR negativa")
+                            _buildIconText(
+                              "mask",
+                              "Pasaporte COVID-19 o prueba PCR negativa",
+                            ),
                           ],
                         ),
                       ),
@@ -376,11 +396,8 @@ class _FlightDetailsState extends State<FlightDetails> {
   _buildIconText(String asset, String text) {
     return Row(
       children: [
-        SvgPicture.asset(
-          'assets/icons/$asset.svg',
-          width: 36,
-        ),
-        Text(text)
+        SvgPicture.asset('assets/icons/$asset.svg', width: 36),
+        Text(text),
       ],
     );
   }

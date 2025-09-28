@@ -1,4 +1,5 @@
 import 'dart:ui';
+import 'package:figma_challenge/pages/profile.dart';
 import 'package:figma_challenge/widgets/tabbar.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -18,7 +19,7 @@ class _HomeScreenState extends State<HomeScreen> {
 
   final List<Widget> pages = const [
     FlightsContent(),
-    Center(child: Text('Profile')),
+    ProfilePage(),
   ];
 
   @override
