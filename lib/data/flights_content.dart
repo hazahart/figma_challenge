@@ -82,7 +82,7 @@ class FlightsContent extends StatelessWidget {
           children: [
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 16.0),
-              child: Text("My Flights", style: TextStyle(fontSize: 42, fontFamily: 'Gigasans-Bold', fontWeight: FontWeight.bold)),
+              child: Text("My Flights", style: TextStyle(fontSize: 42, fontFamily: 'Gigasans-ExtraBold', fontWeight: FontWeight.bold)),
             ),
             Expanded(
               child: ListView.separated(
