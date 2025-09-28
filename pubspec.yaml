@@ -31,6 +31,7 @@ flutter:
     - assets/images/
     - assets/images/new_flight/
     - assets/images/airlines/
+    - assets/images/airports/
     - assets/icons/
     - assets/icons/tabbar/
 
@@ -42,6 +43,10 @@ flutter:
     - family: Montserrat-ExtraBold
       fonts:
         - asset: fonts/Montserrat-ExtraBold.ttf
+
+    - family: Helvetica
+      fonts:
+        - asset: fonts/Helvetica.ttf
 
   # Para agregar assets a tu aplicación, descomenta y edita lo siguiente:
   # assets:
