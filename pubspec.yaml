@@ -32,6 +32,7 @@ flutter:
     - assets/images/new_flight/
     - assets/images/airlines/
     - assets/images/airports/
+    - assets/images/wallpaper/
     - assets/icons/
     - assets/icons/tabbar/
 

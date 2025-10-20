@@ -1,4 +1,6 @@
 import 'package:figma_challenge/screens/home.dart';
+import 'package:figma_challenge/screens/login_screen.dart';
+import 'package:figma_challenge/screens/signup_screen.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:figma_challenge/screens/new_flight.dart';
 import 'package:intl/date_symbol_data_local.dart';
@@ -17,10 +19,12 @@ class PlaneApp extends StatelessWidget {
     return CupertinoApp(
       // debugShowCheckedModeBanner: false,
       theme: CupertinoThemeData(brightness: Brightness.light),
-      initialRoute: '/onboarding0',
+      initialRoute: '/',
       routes: {
-        '/': (context) => const HomeScreen(),
+        '/': (context) => const LoginScreen(),
         '/onboarding0': (context) => const NewFlight(),
+        '/signup': (context) => SignUpScreen(),
+        '/home': (context) => HomeScreen(),
       },
     );
   }
