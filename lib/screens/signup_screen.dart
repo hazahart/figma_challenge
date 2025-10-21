@@ -1,5 +1,5 @@
 import 'package:flutter/cupertino.dart';
-import 'package:animate_do/animate_do.dart'; // <--- 1. Importar el paquete
+import 'package:animate_do/animate_do.dart';
 
 class SignUpScreen extends StatefulWidget {
   const SignUpScreen({super.key});
@@ -108,7 +108,6 @@ class _SignUpScreenState extends State<SignUpScreen> {
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    // --- 2. Animaciones de Título ---
                     ElasticIn(
                       duration: const Duration(milliseconds: 1000),
                       child: const Text(
@@ -134,7 +133,6 @@ class _SignUpScreenState extends State<SignUpScreen> {
                     ),
                     const SizedBox(height: 40),
 
-                    // --- 3. Animaciones de Campos ---
                     ElasticIn(
                       duration: const Duration(milliseconds: 1000),
                       delay: const Duration(milliseconds: 800),
