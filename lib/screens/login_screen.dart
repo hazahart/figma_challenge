@@ -1,4 +1,5 @@
 import 'dart:ui';
+import 'package:animate_do/animate_do.dart';
 import 'package:flutter/cupertino.dart';
 
 class LoginScreen extends StatefulWidget {
@@ -46,91 +47,114 @@ class _LoginScreenState extends State<LoginScreen> {
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  const Text(
-                    "Bienvenido",
-                    style: TextStyle(
-                      fontSize: 28,
-                      fontWeight: FontWeight.bold,
-                      color: CupertinoColors.white,
+                  ElasticIn(
+                    duration: Duration(milliseconds: 1000),
+                    child: const Text(
+                      "Bienvenido",
+                      style: TextStyle(
+                        fontSize: 28,
+                        fontWeight: FontWeight.bold,
+                        color: CupertinoColors.white,
+                      ),
                     ),
                   ),
                   const SizedBox(height: 8),
-                  const Text(
-                    "Inicia sesión",
-                    style: TextStyle(
-                      fontSize: 16,
-                      color: CupertinoColors.white,
+                  ElasticIn(
+                    duration: Duration(milliseconds: 1000),
+                    delay: Duration(milliseconds: 500),
+                    child: const Text(
+                      "Inicia sesión",
+                      style: TextStyle(
+                        fontSize: 16,
+                        color: CupertinoColors.white,
+                      ),
                     ),
                   ),
                   const SizedBox(height: 40),
 
                   // Campo Email
-                  CupertinoTextField(
-                    controller: _emailController,
-                    padding: const EdgeInsets.all(16),
-                    placeholder: "Correo electrónico",
-                    prefix: const Padding(
-                      padding: EdgeInsets.only(left: 12),
-                      child: Icon(
-                        CupertinoIcons.mail,
-                        color: CupertinoColors.systemGrey,
+                  ElasticInRight(
+                    duration: Duration(milliseconds: 1000),
+                    delay: Duration(milliseconds: 1000),
+                    child: CupertinoTextField(
+                      controller: _emailController,
+                      padding: const EdgeInsets.all(16),
+                      placeholder: "Correo electrónico",
+                      prefix: const Padding(
+                        padding: EdgeInsets.only(left: 12),
+                        child: Icon(
+                          CupertinoIcons.mail,
+                          color: CupertinoColors.systemGrey,
+                        ),
                       ),
-                    ),
-                    decoration: BoxDecoration(
-                      color: CupertinoColors.white,
-                      border: BoxBorder.all(color: Color(0xFFAAAAAA)),
-                      borderRadius: BorderRadius.circular(14),
+                      decoration: BoxDecoration(
+                        color: CupertinoColors.white,
+                        border: BoxBorder.all(color: Color(0xFFAAAAAA)),
+                        borderRadius: BorderRadius.circular(14),
+                      ),
                     ),
                   ),
                   const SizedBox(height: 20),
 
                   // Campo Contraseña
-                  CupertinoTextField(
-                    controller: _passwordController,
-                    padding: const EdgeInsets.all(16),
-                    placeholder: "Contraseña",
-                    obscureText: true,
-                    prefix: const Padding(
-                      padding: EdgeInsets.only(left: 12),
-                      child: Icon(
-                        CupertinoIcons.lock,
-                        color: CupertinoColors.systemGrey,
+                  ElasticInRight(
+                    duration: Duration(milliseconds: 1000),
+                    delay: Duration(milliseconds: 1000),
+                    child: CupertinoTextField(
+                      controller: _passwordController,
+                      padding: const EdgeInsets.all(16),
+                      placeholder: "Contraseña",
+                      obscureText: true,
+                      prefix: const Padding(
+                        padding: EdgeInsets.only(left: 12),
+                        child: Icon(
+                          CupertinoIcons.lock,
+                          color: CupertinoColors.systemGrey,
+                        ),
                       ),
-                    ),
-                    decoration: BoxDecoration(
-                      color: CupertinoColors.white,
-                      border: BoxBorder.all(color: Color(0xFFAAAAAA)),
-                      borderRadius: BorderRadius.circular(14),
+                      decoration: BoxDecoration(
+                        color: CupertinoColors.white,
+                        border: BoxBorder.all(color: Color(0xFFAAAAAA)),
+                        borderRadius: BorderRadius.circular(14),
+                      ),
                     ),
                   ),
                   const SizedBox(height: 30),
 
                   _isLoading
                       ? const CupertinoActivityIndicator(radius: 15)
-                      : CupertinoButton.filled(
-                          onPressed: _login,
-                          borderRadius: BorderRadius.circular(12),
-                          padding: const EdgeInsets.symmetric(
-                            vertical: 14,
-                            horizontal: 100,
+                      : ElasticIn(
+                        duration: Duration(milliseconds: 1000),
+                        delay: Duration(milliseconds: 1250),
+                        child: CupertinoButton.filled(
+                            onPressed: _login,
+                            borderRadius: BorderRadius.circular(12),
+                            padding: const EdgeInsets.symmetric(
+                              vertical: 14,
+                              horizontal: 100,
+                            ),
+                            child: const Text(
+                              "Iniciar sesión",
+                              style: TextStyle(fontSize: 18),
+                            ),
                           ),
-                          child: const Text(
-                            "Iniciar sesión",
-                            style: TextStyle(fontSize: 18),
-                          ),
-                        ),
+                      ),
                   const SizedBox(height: 16),
 
-                  CupertinoButton(
-                    onPressed: () {
-                      Navigator.of(context).pushNamed('/signup');
-                    },
-                    child: const Text(
-                      "¿No tienes cuenta? Regístrate",
-                      style: TextStyle(
-                        color: CupertinoColors.white,
-                        fontSize: 16,
-                        fontWeight: FontWeight.bold,
+                  FadeIn(
+                    duration: Duration(milliseconds: 1000),
+                    delay: Duration(milliseconds: 1500),
+                    child: CupertinoButton(
+                      onPressed: () {
+                        Navigator.of(context).pushReplacementNamed('/signup');
+                      },
+                      child: const Text(
+                        "¿No tienes cuenta? Regístrate",
+                        style: TextStyle(
+                          color: CupertinoColors.white,
+                          fontSize: 16,
+                          fontWeight: FontWeight.bold,
+                        ),
                       ),
                     ),
                   ),

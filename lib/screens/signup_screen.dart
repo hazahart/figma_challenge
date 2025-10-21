@@ -1,4 +1,5 @@
 import 'package:flutter/cupertino.dart';
+import 'package:animate_do/animate_do.dart'; // <--- 1. Importar el paquete
 
 class SignUpScreen extends StatefulWidget {
   const SignUpScreen({super.key});
@@ -16,7 +17,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
       TextEditingController();
 
   bool _isLoading = false;
-  String? _selectedGender; 
+  String? _selectedGender;
   DateTime _selectedDate = DateTime.now();
 
   @override
@@ -107,165 +108,202 @@ class _SignUpScreenState extends State<SignUpScreen> {
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    const Text(
-                      "Crea tu cuenta",
-                      style: TextStyle(
-                        fontSize: 28,
-                        fontWeight: FontWeight.bold,
-                        color: CupertinoColors.white,
+                    // --- 2. Animaciones de Título ---
+                    ElasticIn(
+                      duration: const Duration(milliseconds: 1000),
+                      child: const Text(
+                        "Crea tu cuenta",
+                        style: TextStyle(
+                          fontSize: 28,
+                          fontWeight: FontWeight.bold,
+                          color: CupertinoColors.white,
+                        ),
                       ),
                     ),
                     const SizedBox(height: 8),
-                    const Text(
-                      "Completa tus datos para registrarte",
-                      style: TextStyle(
-                        fontSize: 16,
-                        color: CupertinoColors.white,
+                    ElasticIn(
+                      duration: const Duration(milliseconds: 1000),
+                      delay: const Duration(milliseconds: 500),
+                      child: const Text(
+                        "Completa tus datos para registrarte",
+                        style: TextStyle(
+                          fontSize: 16,
+                          color: CupertinoColors.white,
+                        ),
                       ),
                     ),
                     const SizedBox(height: 40),
 
-                    // Campo Nombre
-                    CupertinoTextField(
-                      controller: _nombreController,
-                      padding: const EdgeInsets.all(16),
-                      placeholder: "Nombre",
-                      prefix: _buildIcon(CupertinoIcons.person),
-                      decoration: _fieldDecoration(),
+                    // --- 3. Animaciones de Campos ---
+                    ElasticIn(
+                      duration: const Duration(milliseconds: 1000),
+                      delay: const Duration(milliseconds: 800),
+                      child: CupertinoTextField(
+                        controller: _nombreController,
+                        padding: const EdgeInsets.all(16),
+                        placeholder: "Nombre",
+                        prefix: _buildIcon(CupertinoIcons.person),
+                        decoration: _fieldDecoration(),
+                      ),
                     ),
                     const SizedBox(height: 20),
 
-                    // Campo Apellidos
-                    CupertinoTextField(
-                      controller: _apellidosController,
-                      padding: const EdgeInsets.all(16),
-                      placeholder: "Apellidos",
-                      prefix: _buildIcon(CupertinoIcons.person_2),
-                      decoration: _fieldDecoration(),
+                    ElasticIn(
+                      duration: const Duration(milliseconds: 1000),
+                      delay: const Duration(milliseconds: 900),
+                      child: CupertinoTextField(
+                        controller: _apellidosController,
+                        padding: const EdgeInsets.all(16),
+                        placeholder: "Apellidos",
+                        prefix: _buildIcon(CupertinoIcons.person_2),
+                        decoration: _fieldDecoration(),
+                      ),
                     ),
                     const SizedBox(height: 20),
 
-                    // Campo Email
-                    CupertinoTextField(
-                      controller: _emailController,
-                      padding: const EdgeInsets.all(16),
-                      placeholder: "Correo electrónico",
-                      keyboardType: TextInputType.emailAddress,
-                      prefix: _buildIcon(CupertinoIcons.mail),
-                      decoration: _fieldDecoration(),
+                    ElasticIn(
+                      duration: const Duration(milliseconds: 1000),
+                      delay: const Duration(milliseconds: 1000),
+                      child: CupertinoTextField(
+                        controller: _emailController,
+                        padding: const EdgeInsets.all(16),
+                        placeholder: "Correo electrónico",
+                        keyboardType: TextInputType.emailAddress,
+                        prefix: _buildIcon(CupertinoIcons.mail),
+                        decoration: _fieldDecoration(),
+                      ),
                     ),
                     const SizedBox(height: 20),
 
-                    // Campo Contraseña
-                    CupertinoTextField(
-                      controller: _passwordController,
-                      padding: const EdgeInsets.all(16),
-                      placeholder: "Contraseña",
-                      obscureText: true,
-                      prefix: _buildIcon(CupertinoIcons.lock),
-                      decoration: _fieldDecoration(),
+                    ElasticIn(
+                      duration: const Duration(milliseconds: 1000),
+                      delay: const Duration(milliseconds: 1100),
+                      child: CupertinoTextField(
+                        controller: _passwordController,
+                        padding: const EdgeInsets.all(16),
+                        placeholder: "Contraseña",
+                        obscureText: true,
+                        prefix: _buildIcon(CupertinoIcons.lock),
+                        decoration: _fieldDecoration(),
+                      ),
                     ),
                     const SizedBox(height: 20),
 
-                    // Campo Repetir Contraseña
-                    CupertinoTextField(
-                      controller: _repeatPasswordController,
-                      padding: const EdgeInsets.all(16),
-                      placeholder: "Repetir contraseña",
-                      obscureText: true,
-                      prefix: _buildIcon(CupertinoIcons.lock),
-                      decoration: _fieldDecoration(),
+                    ElasticIn(
+                      duration: const Duration(milliseconds: 1000),
+                      delay: const Duration(milliseconds: 1200),
+                      child: CupertinoTextField(
+                        controller: _repeatPasswordController,
+                        padding: const EdgeInsets.all(16),
+                        placeholder: "Repetir contraseña",
+                        obscureText: true,
+                        prefix: _buildIcon(CupertinoIcons.lock),
+                        decoration: _fieldDecoration(),
+                      ),
                     ),
                     const SizedBox(height: 20),
 
-                    // Campo Sexo
-                    SizedBox(
-                      width: double.infinity,
-                      child: CupertinoSegmentedControl<String>(
-                        children: const {
-                          'M': Padding(
-                            padding: EdgeInsets.all(10),
-                            child: Text("Masculino"),
+                    ElasticIn(
+                      duration: const Duration(milliseconds: 1000),
+                      delay: const Duration(milliseconds: 1300),
+                      child: SizedBox(
+                        width: double.infinity,
+                        child: CupertinoSegmentedControl<String>(
+                          children: const {
+                            'M': Padding(
+                              padding: EdgeInsets.all(10),
+                              child: Text("Masculino"),
+                            ),
+                            'F': Padding(
+                              padding: EdgeInsets.all(10),
+                              child: Text("Femenino"),
+                            ),
+                          },
+                          groupValue: _selectedGender,
+                          onValueChanged: (String? value) {
+                            setState(() {
+                              _selectedGender = value;
+                            });
+                          },
+                          selectedColor: CupertinoColors.activeBlue,
+                          unselectedColor: CupertinoColors.white.withOpacity(
+                            0.8,
                           ),
-                          'F': Padding(
-                            padding: EdgeInsets.all(10),
-                            child: Text("Femenino"),
+                          borderColor: CupertinoColors.activeBlue,
+                          pressedColor: CupertinoColors.activeBlue.withOpacity(
+                            0.2,
                           ),
-                        },
-                        groupValue: _selectedGender,
-                        onValueChanged: (String? value) {
-                          setState(() {
-                            _selectedGender = value;
-                          });
-                        },
-                        selectedColor: CupertinoColors.activeBlue,
-                        unselectedColor: CupertinoColors.white.withOpacity(0.8),
-                        borderColor: CupertinoColors.activeBlue,
-                        pressedColor: CupertinoColors.activeBlue.withOpacity(
-                          0.2,
                         ),
                       ),
                     ),
                     const SizedBox(height: 20),
 
-                    // Campo Fecha de Nacimiento
-                    CupertinoButton(
-                      onPressed: () => _showDatePicker(context),
-                      padding: EdgeInsets.zero,
-                      child: Container(
-                        padding: const EdgeInsets.all(16),
-                        decoration: _fieldDecoration(),
-                        child: Row(
-                          children: [
-                            _buildIcon(CupertinoIcons.calendar),
-                            const SizedBox(width: 10),
-                            Text(
-                              // Formato de fecha
-                              "${_selectedDate.day}/${_selectedDate.month}/${_selectedDate.year}",
-                              style: const TextStyle(
-                                color: CupertinoColors.black,
-                                fontSize: 16,
+                    ElasticIn(
+                      duration: const Duration(milliseconds: 1000),
+                      delay: const Duration(milliseconds: 1400),
+                      child: CupertinoButton(
+                        onPressed: () => _showDatePicker(context),
+                        padding: EdgeInsets.zero,
+                        child: Container(
+                          padding: const EdgeInsets.all(16),
+                          decoration: _fieldDecoration(),
+                          child: Row(
+                            children: [
+                              _buildIcon(CupertinoIcons.calendar),
+                              const SizedBox(width: 10),
+                              Text(
+                                "${_selectedDate.day}/${_selectedDate.month}/${_selectedDate.year}",
+                                style: const TextStyle(
+                                  color: CupertinoColors.black,
+                                  fontSize: 16,
+                                ),
                               ),
-                            ),
-                          ],
+                            ],
+                          ),
                         ),
                       ),
                     ),
                     const SizedBox(height: 30),
 
-                    // Botón de Registro
                     _isLoading
                         ? const CupertinoActivityIndicator(
                             radius: 15,
                             color: CupertinoColors.white,
                           )
-                        : CupertinoButton.filled(
-                            onPressed: _signUp,
-                            borderRadius: BorderRadius.circular(12),
-                            padding: const EdgeInsets.symmetric(vertical: 14),
-                            child: const Row(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: [
-                                Text(
-                                  "Registrarse",
-                                  style: TextStyle(fontSize: 18),
-                                ),
-                              ],
+                        : ElasticIn(
+                            duration: const Duration(milliseconds: 1000),
+                            delay: const Duration(milliseconds: 1500),
+                            child: CupertinoButton.filled(
+                              onPressed: _signUp,
+                              borderRadius: BorderRadius.circular(12),
+                              padding: const EdgeInsets.symmetric(vertical: 14),
+                              child: const Row(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  Text(
+                                    "Registrarse",
+                                    style: TextStyle(fontSize: 18),
+                                  ),
+                                ],
+                              ),
                             ),
                           ),
                     const SizedBox(height: 16),
 
-                    // Botón para ir a Login
-                    CupertinoButton(
-                      onPressed: () {
-                        Navigator.of(context).pop();
-                      },
-                      child: const Text(
-                        "¿Ya tienes cuenta? Inicia sesión",
-                        style: TextStyle(
-                          color: CupertinoColors.white,
-                          fontSize: 16,
-                          fontWeight: FontWeight.bold,
+                    FadeIn(
+                      duration: const Duration(milliseconds: 1000),
+                      delay: const Duration(milliseconds: 1700),
+                      child: CupertinoButton(
+                        onPressed: () {
+                          Navigator.of(context).pushReplacementNamed('/');
+                        },
+                        child: const Text(
+                          "¿Ya tienes cuenta? Inicia sesión",
+                          style: TextStyle(
+                            color: CupertinoColors.white,
+                            fontSize: 16,
+                            fontWeight: FontWeight.bold,
+                          ),
                         ),
                       ),
                     ),
@@ -279,7 +317,6 @@ class _SignUpScreenState extends State<SignUpScreen> {
     );
   }
 
-  // Decoración de los campos
   BoxDecoration _fieldDecoration() {
     return BoxDecoration(
       color: CupertinoColors.white,
@@ -288,7 +325,6 @@ class _SignUpScreenState extends State<SignUpScreen> {
     );
   }
 
-  // Iconos de prefix
   Widget _buildIcon(IconData icon) {
     return Padding(
       padding: const EdgeInsets.only(left: 12),
