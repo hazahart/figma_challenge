@@ -28,11 +28,16 @@ class _LoginScreenState extends State<LoginScreen> {
       child: Stack(
         fit: StackFit.expand,
         children: [
-          ImageFiltered(
-            imageFilter: ImageFilter.blur(sigmaX: 15, sigmaY: 15),
-            child: Image.asset(
-              "assets/images/wallpaper/back.jpg",
-              fit: BoxFit.cover,
+          Container(
+            decoration: BoxDecoration(
+              image: DecorationImage(
+                image: AssetImage("assets/images/wallpaper/back.jpg"),
+                fit: BoxFit.cover,
+                colorFilter: ColorFilter.mode(
+                  CupertinoColors.black.withOpacity(0.3),
+                  BlendMode.darken,
+                ),
+              ),
             ),
           ),
           SafeArea(
@@ -46,7 +51,7 @@ class _LoginScreenState extends State<LoginScreen> {
                     style: TextStyle(
                       fontSize: 28,
                       fontWeight: FontWeight.bold,
-                      color: CupertinoColors.black,
+                      color: CupertinoColors.white,
                     ),
                   ),
                   const SizedBox(height: 8),
@@ -54,7 +59,7 @@ class _LoginScreenState extends State<LoginScreen> {
                     "Inicia sesión",
                     style: TextStyle(
                       fontSize: 16,
-                      color: CupertinoColors.black,
+                      color: CupertinoColors.white,
                     ),
                   ),
                   const SizedBox(height: 40),
@@ -73,6 +78,7 @@ class _LoginScreenState extends State<LoginScreen> {
                     ),
                     decoration: BoxDecoration(
                       color: CupertinoColors.white,
+                      border: BoxBorder.all(color: Color(0xFFAAAAAA)),
                       borderRadius: BorderRadius.circular(14),
                     ),
                   ),
@@ -93,6 +99,7 @@ class _LoginScreenState extends State<LoginScreen> {
                     ),
                     decoration: BoxDecoration(
                       color: CupertinoColors.white,
+                      border: BoxBorder.all(color: Color(0xFFAAAAAA)),
                       borderRadius: BorderRadius.circular(14),
                     ),
                   ),
@@ -121,8 +128,9 @@ class _LoginScreenState extends State<LoginScreen> {
                     child: const Text(
                       "¿No tienes cuenta? Regístrate",
                       style: TextStyle(
-                        color: CupertinoColors.activeBlue,
+                        color: CupertinoColors.white,
                         fontSize: 16,
+                        fontWeight: FontWeight.bold,
                       ),
                     ),
                   ),
