@@ -74,7 +74,7 @@ class _LoginScreenState extends State<LoginScreen> {
 
                   // Campo Email
                   ElasticInRight(
-                    duration: Duration(milliseconds: 1000),
+                    duration: Duration(milliseconds: 850),
                     delay: Duration(milliseconds: 1000),
                     child: CupertinoTextField(
                       controller: _emailController,
