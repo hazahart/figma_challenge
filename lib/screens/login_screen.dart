@@ -1,6 +1,8 @@
 import 'dart:ui';
 import 'package:animate_do/animate_do.dart';
+import 'package:figma_challenge/utils/custom_alert.dart';
 import 'package:flutter/cupertino.dart';
+import '../data/airport_database.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
@@ -14,12 +16,42 @@ class _LoginScreenState extends State<LoginScreen> {
   final TextEditingController _passwordController = TextEditingController();
   bool _isLoading = false;
 
-  void _login() {
+  void _login() async {
     setState(() => _isLoading = true);
-    Future.delayed(const Duration(seconds: 2), () {
+
+    final email = _emailController.text;
+    final password = _passwordController.text;
+
+    if (email.isEmpty || password.isEmpty) {
+      if(mounted) showCustomAlert(context, 'Error', 'Por favor, completa todos los campos.');
       setState(() => _isLoading = false);
-      Navigator.of(context).pushReplacementNamed('/home');
-    });
+      return;
+    }
+
+    try {
+      final db = AirportDatabase.instance;
+      
+      final user = await db.getUserByEmail(email);
+
+      if (user != null && user.password == password) {
+
+        if (mounted) {
+          Navigator.of(context).pushReplacementNamed('/home');
+        }
+      } else {
+        if (mounted) {
+          showCustomAlert(context, 'Error de inicio de sesión', 'El correo o la contraseña son incorrectos.');
+        }
+      }
+    } catch (e) {
+      if (mounted) {
+        showCustomAlert(context, 'Error', 'Ocurrió un error: ${e.toString()}');
+      }
+    }
+    
+    if (mounted) {
+      setState(() => _isLoading = false);
+    }
   }
 
   @override
@@ -89,7 +121,7 @@ class _LoginScreenState extends State<LoginScreen> {
                       ),
                       decoration: BoxDecoration(
                         color: CupertinoColors.white,
-                        border: BoxBorder.all(color: Color(0xFFAAAAAA)),
+                        border: Border.all(color: Color(0xFFAAAAAA)),
                         borderRadius: BorderRadius.circular(14),
                       ),
                     ),
@@ -114,7 +146,7 @@ class _LoginScreenState extends State<LoginScreen> {
                       ),
                       decoration: BoxDecoration(
                         color: CupertinoColors.white,
-                        border: BoxBorder.all(color: Color(0xFFAAAAAA)),
+                        border: Border.all(color: Color(0xFFAAAAAA)),
                         borderRadius: BorderRadius.circular(14),
                       ),
                     ),
@@ -167,3 +199,4 @@ class _LoginScreenState extends State<LoginScreen> {
     );
   }
 }
+

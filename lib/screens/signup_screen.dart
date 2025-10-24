@@ -1,5 +1,9 @@
+import 'package:figma_challenge/models/users_model.dart';
+import 'package:figma_challenge/utils/custom_alert.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:animate_do/animate_do.dart';
+import 'package:intl/intl.dart';
+import '../data/airport_database.dart';
 
 class SignUpScreen extends StatefulWidget {
   const SignUpScreen({super.key});
@@ -30,12 +34,88 @@ class _SignUpScreenState extends State<SignUpScreen> {
     super.dispose();
   }
 
-  void _signUp() {
+  void _signUp() async {
     setState(() => _isLoading = true);
-    Future.delayed(const Duration(seconds: 2), () {
+
+    // 1. Validar campos
+    final nombre = _nombreController.text;
+    final apellidos = _apellidosController.text;
+    final email = _emailController.text;
+    final password = _passwordController.text;
+    final repeatPassword = _repeatPasswordController.text;
+    final sexo = _selectedGender;
+    final fechaNacimiento = DateFormat('yyyy-MM-dd').format(_selectedDate);
+
+    if (nombre.isEmpty ||
+        apellidos.isEmpty ||
+        email.isEmpty ||
+        password.isEmpty) {
+      if (mounted) {
+        showCustomAlert(
+          context,
+          'Campos incompletos',
+          'Por favor, rellena todos los campos obligatorios.',
+        );
+      }
       setState(() => _isLoading = false);
-      Navigator.of(context).pushReplacementNamed('/home');
-    });
+      return;
+    }
+
+    if (password != repeatPassword) {
+      if (mounted) {
+        showCustomAlert(
+          context,
+          'Error de contraseña',
+          'Las contraseñas no coinciden.',
+        );
+      }
+      setState(() => _isLoading = false);
+      return;
+    }
+
+    try {
+      final db = AirportDatabase.instance;
+
+      final existingUser = await db.getUserByEmail(email);
+      if (existingUser != null) {
+        if (mounted) {
+          showCustomAlert(
+            context,
+            'Error',
+            'El correo electrónico ya está registrado.',
+          );
+        }
+        setState(() => _isLoading = false);
+        return;
+      }
+
+      final newUser = User(
+        nombre: nombre,
+        apellidos: apellidos,
+        email: email,
+        password: password,
+        sexo: sexo,
+        fechaNacimiento: fechaNacimiento,
+      );
+
+      final createdUser = await db.createUser(newUser);
+
+      if (mounted && createdUser.id != null) {
+        Navigator.of(context).pushReplacementNamed('/home');
+      } else {
+        if (mounted) {
+          showCustomAlert(context, 'Error', 'No se pudo crear el usuario.');
+        }
+      }
+    } catch (e) {
+      if (mounted) {
+        showCustomAlert(context, 'Error', 'Ocurrió un error: ${e.toString()}');
+      }
+    }
+
+    if (mounted) {
+      setState(() => _isLoading = false);
+    }
   }
 
   void _showDatePicker(BuildContext context) {
@@ -250,7 +330,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                               _buildIcon(CupertinoIcons.calendar),
                               const SizedBox(width: 10),
                               Text(
-                                "${_selectedDate.day}/${_selectedDate.month}/${_selectedDate.year}",
+                                DateFormat('dd/MM/yyyy').format(_selectedDate),
                                 style: const TextStyle(
                                   color: CupertinoColors.black,
                                   fontSize: 16,
