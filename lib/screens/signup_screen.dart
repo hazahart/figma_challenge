@@ -4,6 +4,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:animate_do/animate_do.dart';
 import 'package:intl/intl.dart';
 import '../data/airport_database.dart';
+import 'package:figma_challenge/screens/home.dart'; 
 
 class SignUpScreen extends StatefulWidget {
   const SignUpScreen({super.key});
@@ -36,8 +37,6 @@ class _SignUpScreenState extends State<SignUpScreen> {
 
   void _signUp() async {
     setState(() => _isLoading = true);
-
-    // 1. Validar campos
     final nombre = _nombreController.text;
     final apellidos = _apellidosController.text;
     final email = _emailController.text;
@@ -101,7 +100,11 @@ class _SignUpScreenState extends State<SignUpScreen> {
       final createdUser = await db.createUser(newUser);
 
       if (mounted && createdUser.id != null) {
-        Navigator.of(context).pushReplacementNamed('/home');
+        Navigator.of(context).pushReplacement(
+          CupertinoPageRoute(
+            builder: (context) => HomeScreen(user: createdUser),
+          ),
+        );
       } else {
         if (mounted) {
           showCustomAlert(context, 'Error', 'No se pudo crear el usuario.');

@@ -22,9 +22,9 @@ class PlaneApp extends StatelessWidget {
       initialRoute: '/',
       routes: {
         '/': (context) => const LoginScreen(),
-        '/onboarding0': (context) => const NewFlight(),
+        // '/onboarding0': (context) => NewFlight(),
         '/signup': (context) => SignUpScreen(),
-        '/home': (context) => HomeScreen(),
+        // '/home': (context) => HomeScreen(),
       },
     );
   }

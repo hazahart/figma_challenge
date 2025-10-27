@@ -1,8 +1,121 @@
 import 'dart:io';
+import 'package:figma_challenge/screens/confirm_flight_screen.dart';
+import 'package:figma_challenge/screens/search_results_screen.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:figma_challenge/models/users_model.dart';
+import 'package:figma_challenge/data/airport_database.dart';
+import 'package:figma_challenge/utils/custom_alert.dart';
+import 'package:figma_challenge/models/flights.dart';
 
-class NewFlight extends StatelessWidget {
-  const NewFlight({super.key});
+class NewFlight extends StatefulWidget {
+  final User user;
+
+  const NewFlight({
+    super.key,
+    required this.user,
+  });
+
+  @override
+  State<NewFlight> createState() => _NewFlightState();
+}
+
+class _NewFlightState extends State<NewFlight> {
+  final TextEditingController _searchController = TextEditingController();
+  bool _isLoading = false;
+
+  int _selectedSearchType = 0;
+  final Map<int, Widget> _searchTypes = const {
+    0: Text("Número"),
+    1: Text("Aeropuerto"),
+    2: Text("Destino"),
+  };
+  final Map<int, String> _placeholders = {
+    0: "ej. LH2656",
+    1: "ej. Munich Airport",
+    2: "ej. Barcelona",
+  };
+
+  @override
+  void dispose() {
+    _searchController.dispose();
+    super.dispose();
+  }
+
+  Future<void> _performSearch() async {
+    final searchTerm = _searchController.text.trim();
+
+    if (searchTerm.isEmpty) {
+      showCustomAlert(context, 'Campo vacío', 'Por favor, ingresa un término de búsqueda.');
+      return;
+    }
+
+    setState(() => _isLoading = true);
+
+    try {
+      final db = AirportDatabase.instance;
+      List<Flight> results = [];
+
+      switch (_selectedSearchType) {
+        case 0:
+          results = await db.getFlightTemplatesByFlightNumber(searchTerm);
+          break;
+        case 1:
+          results = await db.getFlightTemplatesByAirport(searchTerm);
+          break;
+        case 2:
+          results = await db.getFlightTemplatesByDestination(searchTerm);
+          break;
+      }
+
+      if (mounted) {
+        if (results.isEmpty) {
+          showCustomAlert(context, 'No encontrado', 'No se encontraron vuelos con "$searchTerm".');
+        } else if (results.length == 1) {
+          _navigateToConfirm(results.first);
+        } else {
+          _navigateToResults(results);
+        }
+      }
+    } catch (e) {
+      if (mounted) {
+        showCustomAlert(context, 'Error', 'Ocurrió un error: ${e.toString()}');
+      }
+    } finally {
+      if (mounted) {
+        setState(() => _isLoading = false);
+      }
+    }
+  }
+
+  Future<void> _navigateToConfirm(Flight flightTemplate) async {
+    final bool? flightAdded = await Navigator.of(context).push(
+      CupertinoPageRoute(
+        builder: (context) => ConfirmFlightScreen(
+          user: widget.user,
+          flight: flightTemplate,
+        ),
+      ),
+    );
+
+    if (flightAdded == true && mounted) {
+      Navigator.of(context).pop(true);
+    }
+  }
+
+  Future<void> _navigateToResults(List<Flight> results) async {
+    final bool? flightAdded = await Navigator.of(context).push(
+      CupertinoPageRoute(
+        builder: (context) => SearchResultsScreen(
+          user: widget.user,
+          results: results,
+        ),
+      ),
+    );
+
+    if (flightAdded == true && mounted) {
+      Navigator.of(context).pop(true);
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -11,14 +124,13 @@ class NewFlight extends StatelessWidget {
         leading: CupertinoButton(
           padding: EdgeInsets.zero,
           onPressed: () {
-            Navigator.of(context).pop();
+            Navigator.of(context).pop(false);
           },
           child: const Text('Close'),
         ),
       ),
       child: Stack(
         children: [
-          // Background con imagen
           Container(
             decoration: const BoxDecoration(
               image: DecorationImage(
@@ -65,15 +177,30 @@ class NewFlight extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     const Text(
-                      'What is your Flight Number?',
+                      'Search by:',
                       style: TextStyle(
                         color: CupertinoColors.secondaryLabel,
                         fontWeight: FontWeight.normal,
                       ),
                     ),
+                    const SizedBox(height: 8),
+                    SizedBox(
+                      width: double.infinity,
+                      child: CupertinoSegmentedControl<int>(
+                        children: _searchTypes,
+                        groupValue: _selectedSearchType,
+                        onValueChanged: (newValue) {
+                          setState(() {
+                            _selectedSearchType = newValue;
+                            _searchController.clear();
+                          });
+                        },
+                      ),
+                    ),
                     const SizedBox(height: 16),
                     CupertinoTextField(
-                      placeholder: 'ex. AA555',
+                      controller: _searchController,
+                      placeholder: _placeholders[_selectedSearchType],
                       padding: const EdgeInsets.symmetric(
                           horizontal: 15, vertical: 10),
                       style: const TextStyle(fontSize: 19.5),
@@ -81,12 +208,17 @@ class NewFlight extends StatelessWidget {
                         color: CupertinoColors.systemGrey5,
                         borderRadius: BorderRadius.circular(10),
                       ),
+                      textCapitalization: _selectedSearchType == 0
+                          ? TextCapitalization.characters
+                          : TextCapitalization.words,
                     ),
                     const SizedBox(height: 16),
                     SizedBox(
                       width: double.infinity,
-                      child: CupertinoButton.filled(
-                        onPressed: () {},
+                      child: _isLoading
+                          ? const Center(child: CupertinoActivityIndicator(radius: 15))
+                          : CupertinoButton.filled(
+                        onPressed: _performSearch,
                         child: const Row(
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [

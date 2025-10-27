@@ -3,6 +3,7 @@ import 'package:animate_do/animate_do.dart';
 import 'package:figma_challenge/utils/custom_alert.dart';
 import 'package:flutter/cupertino.dart';
 import '../data/airport_database.dart';
+import 'package:figma_challenge/screens/home.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
@@ -36,7 +37,11 @@ class _LoginScreenState extends State<LoginScreen> {
       if (user != null && user.password == password) {
 
         if (mounted) {
-          Navigator.of(context).pushReplacementNamed('/home');
+          Navigator.of(context).pushReplacement(
+            CupertinoPageRoute(
+              builder: (context) => HomeScreen(user: user),
+            ),
+          );
         }
       } else {
         if (mounted) {
@@ -199,4 +204,3 @@ class _LoginScreenState extends State<LoginScreen> {
     );
   }
 }
-

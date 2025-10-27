@@ -1,3 +1,4 @@
+import 'package:figma_challenge/models/flight_schedule.dart';
 import 'package:figma_challenge/models/flights.dart';
 import 'package:figma_challenge/models/users_model.dart';
 import 'package:sqflite/sqflite.dart';
@@ -5,6 +6,7 @@ import 'package:path/path.dart';
 import 'dart:async';
 
 import 'package:flutter/services.dart' show rootBundle;
+import 'package:figma_challenge/data/flights_list.dart';
 
 class AirportDatabase {
   static final AirportDatabase instance = AirportDatabase._init();
@@ -22,6 +24,8 @@ class AirportDatabase {
     final dbPath = await getDatabasesPath();
     final path = join(dbPath, filePath);
 
+    // await deleteDatabase(path);
+
     return await openDatabase(
       path,
       version: 1,
@@ -31,18 +35,41 @@ class AirportDatabase {
 
   Future _createDB(Database db, int version) async {
     final schemaString = await rootBundle.loadString('lib/data/schema.sql');
-    
     final statements = schemaString.split(';');
-
-    final batch = db.batch();
     for (final statement in statements) {
       final trimmedStatement = statement.trim();
       if (trimmedStatement.isNotEmpty) {
-        batch.execute(trimmedStatement);
+        await db.execute(trimmedStatement);
       }
     }
-    
-    await batch.commit(noResult: true);
+
+    final flightTemplates = FlightsList.getFlightTemplates();
+    final scheduleTemplates = FlightsList.getSchedule();
+
+    Map<String, int> flightIdMap = {};
+
+    for (final flight in flightTemplates) {
+      final id = await db.insert('Flights', flight.toMap());
+      flightIdMap[flight.flightNumber!] = id;
+    }
+
+    final scheduleBatch = db.batch();
+    for (final entry in scheduleTemplates.entries) {
+      final flightNumber = entry.key;
+      final schedules = entry.value;
+      final flightId = flightIdMap[flightNumber];
+
+      if (flightId != null) {
+        for (final schedule in schedules) {
+          scheduleBatch.insert('FlightSchedules', {
+            'flight_id': flightId,
+            'departure_time': schedule.departure,
+            'arrival_time': schedule.arrival,
+          });
+        }
+      }
+    }
+    await scheduleBatch.commit(noResult: true);
   }
 
   Future<User> createUser(User user) async {
@@ -59,12 +86,7 @@ class AirportDatabase {
       where: 'email = ?',
       whereArgs: [email],
     );
-
-    if (maps.isNotEmpty) {
-      return User.fromMap(maps.first);
-    } else {
-      return null;
-    }
+    return maps.isNotEmpty ? User.fromMap(maps.first) : null;
   }
 
   Future<User?> getUserById(int id) async {
@@ -75,12 +97,7 @@ class AirportDatabase {
       where: 'id = ?',
       whereArgs: [id],
     );
-
-    if (maps.isNotEmpty) {
-      return User.fromMap(maps.first);
-    } else {
-      return null;
-    }
+    return maps.isNotEmpty ? User.fromMap(maps.first) : null;
   }
 
   Future<int> updateUser(User user) async {
@@ -102,53 +119,103 @@ class AirportDatabase {
     );
   }
 
-  Future<Flight> createFlight(Flight flight) async {
-    final db = await instance.database;
-    final id = await db.insert('Flights', flight.toMap());
-    return flight.copyWith(id: id);
-  }
-
-  // Read a single flight by id
-  Future<Flight?> getFlightById(int id) async {
+  Future<List<Flight>> getFlightTemplatesByFlightNumber(String flightNumber) async {
     final db = await instance.database;
     final maps = await db.query(
       'Flights',
-      where: 'id = ?',
-      whereArgs: [id],
+      where: 'flight_number = ?',
+      whereArgs: [flightNumber.toUpperCase()],
     );
-
-    if (maps.isNotEmpty) {
-      return Flight.fromMap(maps.first);
-    } else {
-      return null;
-    }
+    return maps.map((map) => Flight.fromMap(map)).toList();
   }
 
-  Future<void> addUserFlight(int userId, int flightId) async {
+  Future<List<Flight>> getFlightTemplatesByAirport(String airportName) async {
+    final db = await instance.database;
+    final maps = await db.query(
+      'Flights',
+      where: 'aeropuerto LIKE ?',
+      whereArgs: ['%$airportName%'],
+    );
+    return maps.map((map) => Flight.fromMap(map)).toList();
+  }
+
+  Future<List<Flight>> getFlightTemplatesByDestination(String destinationName) async {
+    final db = await instance.database;
+    final maps = await db.query(
+      'Flights',
+      where: 'large_destiny LIKE ?',
+      whereArgs: ['%$destinationName%'],
+    );
+    return maps.map((map) => Flight.fromMap(map)).toList();
+  }
+
+  Future<List<FlightSchedule>> getSchedulesForFlight(int flightId) async {
+    final db = await instance.database;
+    final maps = await db.query(
+      'FlightSchedules',
+      where: 'flight_id = ?',
+      whereArgs: [flightId],
+    );
+    return maps.map((map) => FlightSchedule.fromMap(map)).toList();
+  }
+
+  Future<bool> checkIfBookingExists({
+    required int userId,
+    required int scheduleId,
+    required String flightDate,
+  }) async {
+    final db = await instance.database;
+    final maps = await db.query(
+      'UserBookings',
+      where: 'user_id = ? AND schedule_id = ? AND flight_date = ?',
+      whereArgs: [userId, scheduleId, flightDate],
+      limit: 1,
+    );
+    return maps.isNotEmpty;
+  }
+
+  Future<void> addUserBooking({
+    required int userId,
+    required int scheduleId,
+    required String flightDate,
+  }) async {
     final db = await instance.database;
     await db.insert(
-      'UserFlights',
-      {'user_id': userId, 'flight_id': flightId},
+      'UserBookings',
+      {
+        'user_id': userId,
+        'schedule_id': scheduleId,
+        'flight_date': flightDate,
+      },
       conflictAlgorithm: ConflictAlgorithm.ignore,
     );
   }
 
-  Future<void> removeUserFlight(int userId, int flightId) async {
+  Future<void> removeUserBooking(int bookingId) async {
     final db = await instance.database;
     await db.delete(
-      'UserFlights',
-      where: 'user_id = ? AND flight_id = ?',
-      whereArgs: [userId, flightId],
+      'UserBookings',
+      where: 'id = ?',
+      whereArgs: [bookingId],
     );
   }
 
-  Future<List<Flight>> getUserFlights(int userId) async {
+  Future<List<Flight>> getUserBookedFlights(int userId) async {
     final db = await instance.database;
-    
+
     final result = await db.rawQuery('''
-      SELECT F.* FROM Flights F
-      JOIN UserFlights UF ON F.id = UF.flight_id
-      WHERE UF.user_id = ?
+      SELECT
+        F.*,
+        S.id as scheduleId,
+        S.departure_time,
+        S.arrival_time,
+        B.id as bookingId,
+        B.flight_date as fecha
+      FROM Flights F
+      JOIN FlightSchedules S ON F.id = S.flight_id
+      JOIN UserBookings B ON S.id = B.schedule_id
+      WHERE B.user_id = ?
+      ORDER BY B.flight_date, S.departure_time
     ''', [userId]);
 
     return result.map((map) => Flight.fromMap(map)).toList();
@@ -159,4 +226,3 @@ class AirportDatabase {
     db.close();
   }
 }
-

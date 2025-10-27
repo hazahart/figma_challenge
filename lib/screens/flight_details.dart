@@ -1,8 +1,10 @@
+import 'package:figma_challenge/data/airport_database.dart';
 import 'package:figma_challenge/models/flights.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import '../widgets/tabbar.dart';
+import 'package:figma_challenge/utils/custom_alert.dart';
 
 class FlightDetails extends StatefulWidget {
   const FlightDetails({super.key, required this.vuelo});
@@ -15,6 +17,44 @@ class FlightDetails extends StatefulWidget {
 
 class _FlightDetailsState extends State<FlightDetails> {
   int currentIndex = 0;
+  bool _isDeleting = false;
+
+  Future<void> _deleteBooking() async {
+    final bool? confirmed = await showCupertinoDialog<bool>(
+      context: context,
+      builder: (context) => CupertinoAlertDialog(
+        title: const Text("Eliminar Vuelo"),
+        content: const Text("¿Estás seguro de que quieres eliminar esta reserva de tu lista?"),
+        actions: [
+          CupertinoDialogAction(
+            child: const Text("Cancelar"),
+            onPressed: () => Navigator.of(context).pop(false),
+          ),
+          CupertinoDialogAction(
+            isDestructiveAction: true,
+            child: const Text("Eliminar"),
+            onPressed: () => Navigator.of(context).pop(true),
+          ),
+        ],
+      ),
+    );
+    if (confirmed == true && widget.vuelo.bookingId != null) {
+      setState(() => _isDeleting = true);
+      try {
+        final db = AirportDatabase.instance;
+        await db.removeUserBooking(widget.vuelo.bookingId!);
+
+        if (mounted) {
+          Navigator.of(context).pop(true);
+        }
+      } catch (e) {
+        if (mounted) {
+          showCustomAlert(context, 'Error', 'No se pudo eliminar la reserva.');
+          setState(() => _isDeleting = false);
+        }
+      }
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -33,8 +73,18 @@ class _FlightDetailsState extends State<FlightDetails> {
             fontWeight: FontWeight.bold,
             size: 25,
           ),
-          onPressed: () => Navigator.pop(context),
+          onPressed: () => Navigator.pop(context, false),
         ),
+        trailing: _isDeleting
+            ? const CupertinoActivityIndicator(color: CupertinoColors.white)
+            : CupertinoButton(
+                padding: EdgeInsets.zero,
+                onPressed: _deleteBooking,
+                child: const Icon(
+                  CupertinoIcons.trash,
+                  color: CupertinoColors.systemRed,
+                ),
+              ),
       ),
       child: Stack(
         alignment: Alignment.bottomCenter,
@@ -130,14 +180,14 @@ class _FlightDetailsState extends State<FlightDetails> {
                               ),
                             ),
                             Text(
-                              "10:55",
+                              widget.vuelo.departureTime.toString(),
                               style: TextStyle(
                                 fontFamily: 'SF-Pro',
                                 fontWeight: FontWeight.bold,
                               ),
                             ),
                             Text(
-                              widget.vuelo.fecha,
+                              widget.vuelo.fecha ?? "N/A",
                               style: TextStyle(
                                 fontFamily: 'SF-Pro',
                                 color: Color(0xFF8A8A8E),
@@ -166,14 +216,14 @@ class _FlightDetailsState extends State<FlightDetails> {
                               ),
                             ),
                             Text(
-                              "10:55",
+                              widget.vuelo.arrivalTime.toString(),
                               style: TextStyle(
                                 fontFamily: 'SF-Pro',
                                 fontWeight: FontWeight.bold,
                               ),
                             ),
                             Text(
-                              widget.vuelo.fecha,
+                              widget.vuelo.fecha ?? "N/A",
                               style: TextStyle(
                                 fontFamily: 'SF-Pro',
                                 color: Color(0xFF8A8A8E),
@@ -300,7 +350,6 @@ class _FlightDetailsState extends State<FlightDetails> {
                 padding: EdgeInsets.all(16.0),
                 child: Container(
                   child: Column(
-                    spacing: 10,
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text("Necesitarás los siguientes documentos:"),
@@ -333,10 +382,6 @@ class _FlightDetailsState extends State<FlightDetails> {
               setState(() => currentIndex = index);
             },
             onAddPressed: () {
-              Navigator.of(
-                context,
-                rootNavigator: true,
-              ).pushNamed('/onboarding0');
             },
           ),
         ],
