@@ -25,7 +25,7 @@ class _ConfirmFlightScreenState extends State<ConfirmFlightScreen> {
   DateTime _selectedDate = DateTime.now();
   List<FlightSchedule> _schedules = [];
   int? _selectedScheduleId;
-  String _selectedTimeText = "Selecciona un horario";
+  String _selectedTimeText = "Select a schedule";
   bool _isDataLoading = true;
 
   @override
@@ -39,7 +39,7 @@ class _ConfirmFlightScreenState extends State<ConfirmFlightScreen> {
     if (widget.flight.id == null) {
       if (mounted) {
         setState(() => _isDataLoading = false);
-        _showManualAlert(title: "Error", message: "ID de plantilla de vuelo inválido.", popOnOk: false);
+        _showManualAlert(title: "Error", message: "Invalid flight template ID.", popOnOk: false);
       }
       return;
     }
@@ -58,18 +58,18 @@ class _ConfirmFlightScreenState extends State<ConfirmFlightScreen> {
 
   Future<void> _addUserBooking() async {
     if (_selectedScheduleId == null) {
-      _showManualAlert(title: 'Horario no seleccionado', message: 'Por favor, selecciona un horario para tu vuelo.', popOnOk: false);
+      _showManualAlert(title: 'Schedule Not Selected', message: 'Please select a schedule for your flight.', popOnOk: false);
       return;
     }
     if (widget.user.id == null || widget.flight.id == null) {
-      _showManualAlert(title: 'Error de Datos', message: 'El ID de usuario o de vuelo es nulo.', popOnOk: false);
+      _showManualAlert(title: 'Data Error', message: 'User ID or Flight ID is null.', popOnOk: false);
       return;
     }
 
     setState(() => _isLoading = true);
 
     final db = AirportDatabase.instance;
-    final String formattedDate = DateFormat("E d MMM, y", "es_MX").format(_selectedDate);
+    final String formattedDate = DateFormat("E d MMM, y", "en_US").format(_selectedDate);
 
     try {
       bool alreadyExists = await db.checkIfBookingExists(
@@ -82,8 +82,8 @@ class _ConfirmFlightScreenState extends State<ConfirmFlightScreen> {
         if (mounted) {
           setState(() => _isLoading = false);
           _showManualAlert(
-            title: 'Vuelo Duplicado',
-            message: 'Este vuelo ya se encuentra en tu lista para la fecha y hora seleccionadas.',
+            title: 'Duplicate Flight',
+            message: 'This flight is already in your list for the selected date and time.',
             popOnOk: false,
           );
         }
@@ -99,8 +99,8 @@ class _ConfirmFlightScreenState extends State<ConfirmFlightScreen> {
       if (mounted) {
         setState(() => _isLoading = false);
         _showManualAlert(
-          title: '¡Vuelo añadido!',
-          message: 'El vuelo ${widget.flight.flightNumber} para el $formattedDate ha sido añadido.',
+          title: 'Flight Added!',
+          message: 'Flight ${widget.flight.flightNumber} for $formattedDate has been successfully added.',
           popOnOk: true,
         );
       }
@@ -110,7 +110,7 @@ class _ConfirmFlightScreenState extends State<ConfirmFlightScreen> {
         setState(() => _isLoading = false);
         _showManualAlert(
           title: 'Error',
-          message: 'Ocurrió un error al guardar: ${e.toString()}',
+          message: 'An error occurred while saving: ${e.toString()}',
           popOnOk: false,
         );
       }
@@ -158,7 +158,7 @@ class _ConfirmFlightScreenState extends State<ConfirmFlightScreen> {
                   mainAxisAlignment: MainAxisAlignment.end,
                   children: [
                     CupertinoButton(
-                      child: const Text('Listo'),
+                      child: const Text('Done'),
                       onPressed: () => Navigator.of(context).pop(),
                     ),
                   ],
@@ -203,7 +203,7 @@ class _ConfirmFlightScreenState extends State<ConfirmFlightScreen> {
                   mainAxisAlignment: MainAxisAlignment.end,
                   children: [
                     CupertinoButton(
-                      child: const Text('Listo'),
+                      child: const Text('Done'),
                       onPressed: () {
                         if (selectedIndex >= 0 && selectedIndex < _schedules.length) {
                           final selectedSchedule = _schedules[selectedIndex];
@@ -424,11 +424,11 @@ class _ConfirmFlightScreenState extends State<ConfirmFlightScreen> {
                         const Icon(CupertinoIcons.calendar),
                         const SizedBox(width: 8),
                         const Text(
-                          "Fecha: ",
+                          "Date: ",
                           style: TextStyle(fontSize: 16),
                         ),
                         Text(
-                          DateFormat("E d MMM, y", "es_MX").format(_selectedDate),
+                          DateFormat("E d MMM, y", "en_US").format(_selectedDate),
                           style: const TextStyle(
                               fontSize: 16,
                               fontWeight: FontWeight.bold,
@@ -446,7 +446,7 @@ class _ConfirmFlightScreenState extends State<ConfirmFlightScreen> {
                         const Icon(CupertinoIcons.clock),
                         const SizedBox(width: 8),
                         const Text(
-                          "Horario: ",
+                          "Schedule: ",
                           style: TextStyle(fontSize: 16),
                         ),
                         _isDataLoading

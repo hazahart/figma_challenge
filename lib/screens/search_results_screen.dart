@@ -33,7 +33,7 @@ class SearchResultsScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return CupertinoPageScaffold(
       navigationBar: const CupertinoNavigationBar(
-        middle: Text("Resultados de Búsqueda"),
+        middle: Text("Search Results"),
       ),
       child: SafeArea(
         child: ListView.builder(
@@ -95,7 +95,7 @@ class SearchResultsScreen extends StatelessWidget {
                             children: [
                               Text(
                                 vuelo.origen,
-                                style: TextStyle(
+                                style: const TextStyle(
                                   fontFamily: "Montserrat",
                                   fontWeight: FontWeight.bold,
                                   fontSize: 15,
@@ -107,7 +107,7 @@ class SearchResultsScreen extends StatelessWidget {
                               const SizedBox(width: 5),
                               Text(
                                 vuelo.destino.split(' ')[0],
-                                style: TextStyle(
+                                style: const TextStyle(
                                   fontFamily: "Montserrat",
                                   fontWeight: FontWeight.bold,
                                   fontSize: 15,

@@ -68,7 +68,7 @@ class _ProfilePageState extends State<ProfilePage> {
 
     if (nombre.isEmpty || apellidos.isEmpty) {
       if (mounted) {
-        showCustomAlert(context, 'Campos incompletos', 'El nombre y los apellidos no pueden estar vacíos.');
+        showCustomAlert(context, 'Incomplete Fields', 'Your first and last names cannot be empty.');
       }
       setState(() => _isSaving = false);
       return;
@@ -89,14 +89,14 @@ class _ProfilePageState extends State<ProfilePage> {
             _currentUser = updatedUser;
           });
           widget.onProfileUpdated(updatedUser);
-          showCustomAlert(context, 'Éxito', 'Tu perfil ha sido actualizado.');
+          showCustomAlert(context, 'Success', 'Your profile has been updated.');
         } else {
-          showCustomAlert(context, 'Error', 'No se pudo actualizar el perfil. Intenta de nuevo.');
+          showCustomAlert(context, 'Error', 'Could not update profile. Please try again.');
         }
       }
     } catch (e) {
       if (mounted) {
-        showCustomAlert(context, 'Error', 'Ocurrió un error inesperado: ${e.toString()}');
+        showCustomAlert(context, 'Error', 'An unexpected error occurred: ${e.toString()}');
       }
     } finally {
       if (mounted) {
@@ -117,16 +117,16 @@ class _ProfilePageState extends State<ProfilePage> {
     final bool? confirmed = await showCupertinoDialog<bool>(
       context: context,
       builder: (context) => CupertinoAlertDialog(
-        title: const Text("Cerrar Sesión"),
-        content: const Text("¿Estás seguro de que quieres cerrar tu sesión?"),
+        title: const Text("Logout"),
+        content: const Text("Are you sure you want to log out?"),
         actions: [
           CupertinoDialogAction(
-            child: const Text("Cancelar"),
+            child: const Text("Cancel"),
             onPressed: () => Navigator.of(context).pop(false),
           ),
           CupertinoDialogAction(
             isDestructiveAction: true,
-            child: const Text("Cerrar Sesión"),
+            child: const Text("Log Out"),
             onPressed: () => Navigator.of(context).pop(true),
           ),
         ],
@@ -143,39 +143,45 @@ class _ProfilePageState extends State<ProfilePage> {
 
   @override
   Widget build(BuildContext context) {
-    return Material(
-      color: const Color(0xFFF2F2F7),
+    return CupertinoPageScaffold(
+      backgroundColor: const Color(0xFFF2F2F7),
+      navigationBar: CupertinoNavigationBar(
+        backgroundColor: CupertinoColors.systemBackground.resolveFrom(context).withOpacity(0.95),
+        border: const Border(bottom: BorderSide(color: CupertinoColors.systemGrey5, width: 0.0)),
+        trailing: CupertinoButton(
+          padding: EdgeInsets.zero,
+          onPressed: _isSaving ? null : _saveProfile,
+          child: _isSaving
+              ? const CupertinoActivityIndicator()
+              : const Text("Save"),
+        ),
+      ),
       child: ListView(
         children: [
-          SafeArea(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: const [
-                Padding(
-                  padding: EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
-                  child: Text(
-                    "My Account",
-                    style: TextStyle(
-                        fontSize: 34,
-                        fontWeight: FontWeight.bold,
-                        color: CupertinoColors.label
-                    ),
-                  ),
-                ),
-                Padding(
-                  padding: EdgeInsets.only(left: 16.0, right: 16.0, bottom: 8.0),
-                  child: Text(
-                    "PROFILE",
-                    style: TextStyle(
-                      fontSize: 13,
-                      fontWeight: FontWeight.w600,
-                      color: CupertinoColors.secondaryLabel,
-                    ),
-                  ),
-                ),
-              ],
+          const Padding(
+            padding: EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
+            child: Text(
+              "My Account",
+              style: TextStyle(
+                  fontSize: 34,
+                  fontWeight: FontWeight.bold,
+                  color: CupertinoColors.label,
+                fontFamily: 'Montserrat-ExtraBold',
+              ),
             ),
           ),
+          const Padding(
+            padding: EdgeInsets.only(left: 16.0, right: 16.0, bottom: 8.0),
+            child: Text(
+              "PROFILE",
+              style: TextStyle(
+                fontSize: 13,
+                fontWeight: FontWeight.w600,
+                color: CupertinoColors.secondaryLabel,
+              ),
+            ),
+          ),
+
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 16.0),
             child: Card(
@@ -186,7 +192,7 @@ class _ProfilePageState extends State<ProfilePage> {
                 children: [
                   CupertinoTextField.borderless(
                     controller: _nombreController,
-                    placeholder: "Name",
+                    placeholder: "First Name",
                     padding: const EdgeInsets.all(16),
                   ),
                   const Padding(
@@ -195,7 +201,7 @@ class _ProfilePageState extends State<ProfilePage> {
                   ),
                   CupertinoTextField.borderless(
                     controller: _apellidosController,
-                    placeholder: "Surname",
+                    placeholder: "Last Name",
                     padding: const EdgeInsets.all(16),
                   ),
                   const Padding(
@@ -217,9 +223,9 @@ class _ProfilePageState extends State<ProfilePage> {
           ),
 
           const SizedBox(height: 20),
-          Padding(
-            padding: const EdgeInsets.only(left: 16.0, right: 16.0, bottom: 8.0),
-            child: const Text(
+          const Padding(
+            padding: EdgeInsets.only(left: 16.0, right: 16.0, bottom: 8.0),
+            child: Text(
               "SETTINGS",
               style: TextStyle(
                 fontSize: 13,
@@ -332,7 +338,7 @@ class _ProfilePageState extends State<ProfilePage> {
               shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
               child: CupertinoListTile(
                 leading: const Icon(CupertinoIcons.calendar),
-                title: const Text("Calendario de Vuelos"),
+                title: const Text("Flight Calendar"),
                 trailing: const Icon(CupertinoIcons.right_chevron),
                 onTap: _navigateToCalendar,
               ),
@@ -349,7 +355,7 @@ class _ProfilePageState extends State<ProfilePage> {
               child: CupertinoListTile(
                 title: const Center(
                   child: Text(
-                    "Cerrar Sesión",
+                    "Log Out",
                     style: TextStyle(color: CupertinoColors.systemRed),
                   ),
                 ),

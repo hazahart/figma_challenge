@@ -16,6 +16,7 @@ class FlightsContent extends StatefulWidget {
 class FlightsContentState extends State<FlightsContent> {
   bool _isLoading = true;
   List<Flight> _vuelos = [];
+  bool _isEditing = false;
 
   @override
   void initState() {
@@ -29,6 +30,13 @@ class FlightsContentState extends State<FlightsContent> {
     }
 
     final db = AirportDatabase.instance;
+    if (widget.user.id == null) {
+      if (mounted) {
+        setState(() => _isLoading = false);
+      }
+      return;
+    }
+
     final userFlights = await db.getUserBookedFlights(widget.user.id!);
 
     if (mounted) {
@@ -39,7 +47,63 @@ class FlightsContentState extends State<FlightsContent> {
     }
   }
 
+  void _toggleEditing() {
+    setState(() {
+      _isEditing = !_isEditing;
+    });
+  }
+
+  Future<void> _removeFlight(int bookingId) async {
+    final db = AirportDatabase.instance;
+    await db.removeUserBooking(bookingId);
+    await loadUserFlights();
+  }
+
+
   Widget buildFlightTile(Flight vuelo, int index) {
+    if (vuelo.bookingId != null) {
+      return Dismissible(
+        key: Key(vuelo.bookingId.toString()),
+        direction: DismissDirection.endToStart,
+        background: Container(
+          color: CupertinoColors.systemRed,
+          alignment: Alignment.centerRight,
+          padding: const EdgeInsets.symmetric(horizontal: 20.0),
+          child: const Icon(CupertinoIcons.trash_fill, color: CupertinoColors.white),
+        ),
+        confirmDismiss: (direction) async {
+          final bool? confirmed = await showCupertinoDialog<bool>(
+            context: context,
+            builder: (BuildContext context) => CupertinoAlertDialog(
+              title: const Text("Confirm Deletion"),
+              content: Text("Are you sure you want to delete the flight to ${vuelo.destino}?"),
+              actions: <CupertinoDialogAction>[
+                CupertinoDialogAction(
+                  child: const Text("Cancel"),
+                  onPressed: () => Navigator.of(context).pop(false),
+                ),
+                CupertinoDialogAction(
+                  isDestructiveAction: true,
+                  child: const Text("Delete"),
+                  onPressed: () => Navigator.of(context).pop(true),
+                ),
+              ],
+            ),
+          );
+          return confirmed ?? false;
+        },
+        onDismissed: (direction) {
+          if (vuelo.bookingId != null) {
+            _removeFlight(vuelo.bookingId!);
+          }
+        },
+        child: _buildFlightListTile(vuelo),
+      );
+    }
+    return _buildFlightListTile(vuelo);
+  }
+
+  Widget _buildFlightListTile(Flight vuelo) {
     return ListTile(
       leading: CircleAvatar(
         backgroundColor: CupertinoColors.white,
@@ -59,7 +123,7 @@ class FlightsContentState extends State<FlightsContent> {
             children: [
               Text(
                 vuelo.origen,
-                style: TextStyle(
+                style: const TextStyle(
                   fontFamily: "Montserrat",
                   fontWeight: FontWeight.bold,
                 ),
@@ -69,7 +133,7 @@ class FlightsContentState extends State<FlightsContent> {
               const SizedBox(width: 5),
               Text(
                 vuelo.destino,
-                style: TextStyle(
+                style: const TextStyle(
                   fontFamily: "Montserrat",
                   fontWeight: FontWeight.bold,
                 ),
@@ -77,7 +141,7 @@ class FlightsContentState extends State<FlightsContent> {
             ],
           ),
           Text(
-            "${vuelo.fecha ?? 'Sin fecha'}  ·  ${vuelo.departureTime ?? 'Sin hora'}",
+            "${vuelo.fecha ?? 'No date'}  ·  ${vuelo.departureTime ?? 'No time'}",
             style: const TextStyle(color: CupertinoColors.secondaryLabel),
           ),
         ],
@@ -102,12 +166,8 @@ class FlightsContentState extends State<FlightsContent> {
   @override
   Widget build(BuildContext context) {
     return CupertinoPageScaffold(
-      navigationBar: CupertinoNavigationBar(
-        trailing: CupertinoButton(
-          padding: EdgeInsets.zero,
-          onPressed: () {},
-          child: const Text("Edit"),
-        ),
+      navigationBar: const CupertinoNavigationBar(
+        trailing: SizedBox.shrink(),
       ),
       child: SafeArea(
         child: Column(
@@ -121,7 +181,7 @@ class FlightsContentState extends State<FlightsContent> {
               child: _isLoading
                   ? const Center(child: CupertinoActivityIndicator(radius: 15))
                   : _vuelos.isEmpty
-                  ? const Center(child: Text("No tienes vuelos añadidos."))
+                  ? const Center(child: Text("You have no flights added."))
                   : ListView.separated(
                 padding: const EdgeInsets.only(bottom: 120, top: 16),
                 itemCount: _vuelos.length,

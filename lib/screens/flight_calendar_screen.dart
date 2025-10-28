@@ -44,8 +44,7 @@ class _FlightCalendarScreenState extends State<FlightCalendarScreen> {
 
     final db = AirportDatabase.instance;
     final bookedFlights = await db.getUserBookedFlights(widget.user.id!);
-
-    final DateFormat formatFromDb = DateFormat("E d MMM, y", "es_MX");
+    final DateFormat formatFromDb = DateFormat("E d MMM, y", "en_US");
     final Map<DateTime, List<Flight>> events = {};
 
     for (final flight in bookedFlights) {
@@ -87,7 +86,7 @@ class _FlightCalendarScreenState extends State<FlightCalendarScreen> {
 
     return CupertinoPageScaffold(
       navigationBar: CupertinoNavigationBar(
-        middle: const Text("Calendario de Vuelos"),
+        middle: const Text("Flight Calendar"),
         leading: CupertinoButton(
           padding: EdgeInsets.zero,
           child: const Icon(CupertinoIcons.back),
@@ -106,7 +105,7 @@ class _FlightCalendarScreenState extends State<FlightCalendarScreen> {
               Material(
                 color: backgroundColor,
                 child: TableCalendar<Flight>(
-                  locale: 'es_MX',
+                  locale: 'en_US',
                   firstDay: DateTime.utc(2020, 1, 1),
                   lastDay: DateTime.utc(2030, 12, 31),
                   focusedDay: _focusedDay,
@@ -181,12 +180,12 @@ class _FlightCalendarScreenState extends State<FlightCalendarScreen> {
     final flights = _getFlightsForDay(_selectedDay!);
 
     if (flights.isEmpty) {
-      return const Center(
+      return Center(
           child: Padding(
-            padding: EdgeInsets.all(16.0),
+            padding: const EdgeInsets.all(16.0),
             child: Text(
-                "No hay vuelos para este día.",
-                style: TextStyle(color: CupertinoColors.secondaryLabel)
+                "No flights for this day.",
+                style: TextStyle(color: CupertinoColors.secondaryLabel.resolveFrom(context))
             ),
           )
       );

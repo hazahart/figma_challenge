@@ -25,14 +25,14 @@ class _NewFlightState extends State<NewFlight> {
 
   int _selectedSearchType = 0;
   final Map<int, Widget> _searchTypes = const {
-    0: Text("Número"),
-    1: Text("Aeropuerto"),
-    2: Text("Destino"),
+    0: Text("Number"),
+    1: Text("Airport"),
+    2: Text("Destination"),
   };
   final Map<int, String> _placeholders = {
-    0: "ej. LH2656",
-    1: "ej. Munich Airport",
-    2: "ej. Barcelona",
+    0: "e.g. LH2656",
+    1: "e.g. Munich Airport",
+    2: "e.g. Barcelona",
   };
 
   @override
@@ -45,7 +45,7 @@ class _NewFlightState extends State<NewFlight> {
     final searchTerm = _searchController.text.trim();
 
     if (searchTerm.isEmpty) {
-      showCustomAlert(context, 'Campo vacío', 'Por favor, ingresa un término de búsqueda.');
+      showCustomAlert(context, 'Empty Field', 'Please enter a search term.');
       return;
     }
 
@@ -69,7 +69,7 @@ class _NewFlightState extends State<NewFlight> {
 
       if (mounted) {
         if (results.isEmpty) {
-          showCustomAlert(context, 'No encontrado', 'No se encontraron vuelos con "$searchTerm".');
+          showCustomAlert(context, 'Not Found', 'No flights were found with "$searchTerm".');
         } else if (results.length == 1) {
           _navigateToConfirm(results.first);
         } else {
@@ -78,7 +78,7 @@ class _NewFlightState extends State<NewFlight> {
       }
     } catch (e) {
       if (mounted) {
-        showCustomAlert(context, 'Error', 'Ocurrió un error: ${e.toString()}');
+        showCustomAlert(context, 'Error', 'An error occurred: ${e.toString()}');
       }
     } finally {
       if (mounted) {
